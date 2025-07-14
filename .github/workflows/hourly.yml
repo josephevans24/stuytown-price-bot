@@ -1,15 +1,30 @@
+# .github/workflows/hourly.yml
+name: StuyTown price check        # 👈 shows up in Actions sidebar
+
+on:
+  schedule:
+    # every hour on the hour (UTC) ≈ top of the hour in New York
+    - cron: "0 * * * *"
+  workflow_dispatch:              # lets you click “Run workflow” manually
+
 jobs:
   run:
     runs-on: ubuntu-latest
+
     steps:
+      # 1) pull your repo
       - uses: actions/checkout@v4
 
+      # 2) set up the latest Python 3.x
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - run: pip install -r requirements.txt
+      # 3) install dependencies (requests + twilio)
+      - name: Install Python deps
+        run: pip install -r requirements.txt
 
+      # 4) run the script with your secrets
       - name: Run StuyTown checker
         run: python stuytown_check.py
         env:
