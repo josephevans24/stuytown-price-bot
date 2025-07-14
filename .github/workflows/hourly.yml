@@ -1,35 +1,30 @@
-# .github/workflows/hourly.yml
-name: StuyTown price check        # 👈 shows up in Actions sidebar
+name: StuyTown price check
 
 on:
   schedule:
-    # every hour on the hour (UTC) ≈ top of the hour in New York
-    - cron: "0 * * * *"
-  workflow_dispatch:              # lets you click “Run workflow” manually
+    # 9:00 AM America/New_York  ➜  13:00 UTC
+    - cron: "0 13 * * *"
+  workflow_dispatch:            # keeps the “Run workflow” button
 
 jobs:
   run:
     runs-on: ubuntu-latest
-
     steps:
-      # 1) pull your repo
       - uses: actions/checkout@v4
 
-      # 2) set up the latest Python 3.x
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      # 3) install dependencies (requests + twilio)
-      - name: Install Python deps
-        run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt
 
-      # 4) run the script with your secrets
-      - name: Run StuyTown checker
-        run: python stuytown_check.py
+      - name: Run StuyTown e-mail checker
+        run: python stuytown_email.py
         env:
-          TWILIO_SID:   ${{ secrets.TWILIO_SID }}
-          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
-          TWILIO_FROM:  ${{ secrets.TWILIO_FROM }}
-          TWILIO_TO:    ${{ secrets.TWILIO_TO }}
-          PRICE_CAP:    ${{ secrets.PRICE_CAP }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT:   ${{ secrets.SMTP_PORT }}
+          SMTP_USER:   ${{ secrets.SMTP_USER }}
+          SMTP_PASS:   ${{ secrets.SMTP_PASS }}
+          EMAIL_FROM:  ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO:    ${{ secrets.EMAIL_TO }}
+          PRICE_CAP:   ${{ secrets.PRICE_CAP }}
