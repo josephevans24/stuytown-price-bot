@@ -1,8 +1,9 @@
+# .github/workflows/hourly.yml
 name: StuyTown price check
 
 on:
   schedule:
-    # 9:00 AM America/New_York  ➜  13:00 UTC
+    # Run once a day at 09:00 America/New_York (13:00 UTC)
     - cron: "0 13 * * *"
   workflow_dispatch:            # keeps the “Run workflow” button
 
@@ -10,16 +11,21 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
+      # 1) Check out your repo
       - uses: actions/checkout@v4
 
+      # 2) Set up Python
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - run: pip install -r requirements.txt
+      # 3) Install dependencies
+      - name: Install Python deps
+        run: pip install -r requirements.txt
 
+      # 4) Run the e-mail alert script
       - name: Run StuyTown e-mail checker
-        run: python stuytown_email.py
+        run: python Stuytown_email.py        # ← matches the capital “S”
         env:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT:   ${{ secrets.SMTP_PORT }}
