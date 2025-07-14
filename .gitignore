@@ -1,3 +1,9 @@
 .DS_Store
 *.pdf
 *.xlsx
+.ipynb_checkpoints/
+*.ipynb
+*.jpg
+*.jrp
+My Tableau Repository/
+.localized
