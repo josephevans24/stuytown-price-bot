@@ -1,0 +1,32 @@
+name: StuyTown price check   # appears in the Actions tab
+
+on:
+  schedule:
+    # Every hour on the hour (UTC) → top of the hour in New York
+    - cron: "0 * * * *"
+  workflow_dispatch:         # lets you click “Run workflow” manually
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Run StuyTown checker
+        run: python stuytown_check.py        # adjust if your file name differs
+        env:
+          TWILIO_SID:   ${{ secrets.TWILIO_SID }}
+          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
+          TWILIO_FROM:  ${{ secrets.TWILIO_FROM }}
+          TWILIO_TO:    ${{ secrets.TWILIO_TO }}
+          PRICE_CAP:    ${{ secrets.PRICE_CAP }}
